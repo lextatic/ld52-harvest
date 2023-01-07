@@ -21,17 +21,34 @@ public class CrowMove : CrowDetecting
 	public override void Enter()
 	{
 		AICharacterMotor.MoveSpeed = Data.WalkSpeed;
-		AICharacterMotor.TargetPosition = _patrolPositions[Random.Range(0, _patrolPositions.Length)];
 
-		// Works, but may become too easy
-		//var randomDirection2D = (Random.insideUnitCircle.normalized * 5);
-		//AICharacterMotor.TargetPosition = Transform.position + new Vector3(randomDirection2D.x, 0, randomDirection2D.y);
+		var rand = Random.Range(0f, 1f);
+
+		if (rand < .3f)
+		{
+			AICharacterMotor.TargetPosition = _patrolPositions[Random.Range(0, _patrolPositions.Length)];
+		}
+		else
+		{
+			var randomDirection2D = (Random.insideUnitCircle.normalized * 5);
+			AICharacterMotor.TargetPosition = Transform.position + new Vector3(randomDirection2D.x, 0, randomDirection2D.y);
+		}
 
 		base.Enter();
 	}
 
 	public override void Update()
 	{
+		if (Data.CrowView.transform.position.y > 0)
+		{
+			Data.CrowView.transform.Translate(Vector3.up * 3f * Time.deltaTime);
+
+			if (Data.CrowView.transform.position.y > Data.MaxFlightHeight)
+			{
+				Data.CrowView.transform.Translate(Vector3.down * (Data.CrowView.transform.position.y - Data.MaxFlightHeight));
+			}
+		}
+
 		if (Vector3.Distance(Transform.position, AICharacterMotor.TargetPosition) <= 1f)
 		{
 			NextState = new CrowMove(EnemyAI);

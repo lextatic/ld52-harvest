@@ -24,7 +24,7 @@ public class CrowGoToCrop : CrowMachineState
 		AICharacterMotor.TargetPosition.y = 0;
 
 		var distance = Vector3.Distance(Transform.position, AICharacterMotor.TargetPosition);
-		var time = distance / AICharacterMotor.MoveSpeed;
+		var time = (distance - 0.1f) / AICharacterMotor.MoveSpeed;
 
 		_heightDecreaseVelocity = Data.CrowView.transform.position.y / time;
 
@@ -54,7 +54,7 @@ public class CrowGoToCrop : CrowMachineState
 
 			if (Data.CrowView.transform.position.y < 0)
 			{
-				Data.CrowView.transform.position = new Vector3(Data.CrowView.transform.position.x, 0, Data.CrowView.transform.position.z);
+				Data.CrowView.transform.Translate(Vector3.up * -Data.CrowView.transform.position.y);
 			}
 		}
 
