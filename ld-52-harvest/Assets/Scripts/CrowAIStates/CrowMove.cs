@@ -39,7 +39,7 @@ public class CrowMove : CrowDetecting
 
 	public override void Update()
 	{
-		if (Data.CrowView.transform.position.y > 0)
+		if (Data.CrowView.transform.position.y < Data.MaxFlightHeight)
 		{
 			Data.CrowView.transform.Translate(Vector3.up * 3f * Time.deltaTime);
 
