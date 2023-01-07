@@ -37,7 +37,7 @@
                 {
                     "name": "Direction",
                     "id": "bff7c4e5-448b-454b-bd0a-1e631a1d75a6",
-                    "path": "2DVector(mode=2)",
+                    "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

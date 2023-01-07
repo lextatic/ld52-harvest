@@ -1,40 +1,37 @@
 using UnityEngine;
 
-namespace Modulo18
+public class AICharacterMotor : MonoBehaviour
 {
-	public class AICharacterMotor : MonoBehaviour
+	public float MoveSpeed;
+
+	public Vector3 TargetPosition;
+
+	private CharacterController characterController;
+
+	public bool ReverseDirection = false;
+
+	private void Awake()
 	{
-		public float MoveSpeed;
+		characterController = GetComponent<CharacterController>();
+	}
 
-		public Vector3 TargetPosition;
+	private void Update()
+	{
+		var direction = TargetPosition - transform.position;
+		direction.y = 0;
 
-		private CharacterController characterController;
+		if (direction.magnitude < 0.1f)
+			return;
 
-		public bool ReverseDirection = false;
+		characterController.SimpleMove(direction.normalized * MoveSpeed);
 
-		private void Awake()
+		if (ReverseDirection)
 		{
-			characterController = GetComponent<CharacterController>();
+			transform.LookAt(transform.position - direction.normalized);
 		}
-
-		private void Update()
+		else
 		{
-			var direction = TargetPosition - transform.position;
-			direction.y = 0;
-
-			if (direction.magnitude < 0.1f)
-				return;
-
-			characterController.SimpleMove(direction.normalized * MoveSpeed);
-
-			if (ReverseDirection)
-			{
-				transform.LookAt(transform.position - direction.normalized);
-			}
-			else
-			{
-				transform.LookAt(transform.position + direction.normalized);
-			}
+			transform.LookAt(transform.position + direction.normalized);
 		}
 	}
 }
