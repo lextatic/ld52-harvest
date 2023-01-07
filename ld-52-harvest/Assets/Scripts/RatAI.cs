@@ -28,43 +28,13 @@ public class RatAI : MonoBehaviour
 
 	private void Update()
 	{
-		//if (_hurtTime >= Time.time)
-		//{
-		//	if (_hurtTime >= Time.time + HurtDuration - HurtMoveDuration)
-		//	{
-		//		_characterMotor.TargetPosition = transform.position - transform.forward;
-		//		_characterMotor.MoveSpeed = 15;
-		//		_characterMotor.ReverseDirection = true;
-		//	}
-
-		//	return;
-		//}
-
 		// Atualizar states
 		_currentMovementMachineState = _currentMovementMachineState.Handle();
-		//_currentAttackMachineState = _currentAttackMachineState.Handle();
 		CurrentState = _currentMovementMachineState.Name;
 	}
-
-	private float _hurtTime;
-	public float HurtDuration = 0.3f;
-	public float HurtMoveDuration = 0.1f;
 
 	private void OnTriggerStay(Collider other)
 	{
 		OnHurt?.Invoke();
-
-		//if (_hurtTime >= Time.time)
-		//{
-		//	return;
-		//}
-
-		//var lookPosition = other.transform.position;
-		//lookPosition.y = transform.position.y;
-		//transform.LookAt(lookPosition);
-		////_facingDirection = (other.transform.position - transform.position).normalized;
-		////_facingDirection.y = 0;
-
-		//_hurtTime = Time.time + HurtDuration;
 	}
 }

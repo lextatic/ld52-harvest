@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RatIdle : Detecting
+public class RatIdle : RatDetecting
 {
 	private float _idleTimer;
 

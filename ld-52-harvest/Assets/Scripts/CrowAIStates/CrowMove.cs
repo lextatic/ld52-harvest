@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RatMove : RatDetecting
+public class CrowMove : CrowDetecting
 {
 	private readonly Vector3[] _patrolPositions =
 		new Vector3[]
@@ -12,10 +12,10 @@ public class RatMove : RatDetecting
 			//new Vector3(-4, 0, 4)
 		};
 
-	public RatMove(RatAI enemyAI)
+	public CrowMove(CrowAI enemyAI)
 		: base(enemyAI)
 	{
-		Name = RatState.Move;
+		Name = CrowState.Move;
 	}
 
 	public override void Enter()
@@ -32,9 +32,9 @@ public class RatMove : RatDetecting
 
 	public override void Update()
 	{
-		if (Vector3.Distance(Transform.position, AICharacterMotor.TargetPosition) <= 0.2f)
+		if (Vector3.Distance(Transform.position, AICharacterMotor.TargetPosition) <= 1f)
 		{
-			NextState = new RatIdle(EnemyAI);
+			NextState = new CrowMove(EnemyAI);
 			Stage = Event.Exit;
 		}
 		else

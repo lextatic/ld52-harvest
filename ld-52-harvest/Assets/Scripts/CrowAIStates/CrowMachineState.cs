@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public abstract class RatMachineState
+public abstract class CrowMachineState
 {
-	public enum RatState
+	public enum CrowState
 	{
-		Move, Idle, GoToCrop, Eat, Flee, RunAway
+		Move, GoToCrop, Eat, Flee, RunAway
 	}
 
 	protected enum Event
@@ -13,12 +13,10 @@ public abstract class RatMachineState
 	}
 
 	[System.Serializable]
-	public struct RatAIData
+	public struct CrowAIData
 	{
 		[Header("Detection")]
-		public float VisibleDistance;
-		public float VisibaleAngle;
-		public float AttackDistance;
+		public Vector2 MinMaxVisibleDistance;
 
 		[Header("Movement Speeds")]
 		public float WalkSpeed;
@@ -30,29 +28,33 @@ public abstract class RatMachineState
 		public Vector2 MinMaxIdleDuration;
 		public float EatDuration;
 
+		[Header("Position")]
+		public float MaxFlightHeight;
+
 		[Header("References")]
-		public AICharacterMotor AICharacterMotor;
+		public AISteeringCharacterMotor AICharacterMotor;
 		public Transform PlayerTransform;
+		public Transform CrowView;
 
 		[HideInInspector]
 		public Transform TargetCropTransform;
 	}
 
-	public RatState Name;
+	public CrowState Name;
 
 	protected Event Stage;
-	protected RatAI EnemyAI;
-	protected RatMachineState NextState;
+	protected CrowAI EnemyAI;
+	protected CrowMachineState NextState;
 
-	protected RatAIData Data;
-	protected AICharacterMotor AICharacterMotor;
+	protected CrowAIData Data;
+	protected AISteeringCharacterMotor AICharacterMotor;
 	protected Transform PlayerTransform;
 	protected Transform TargetCropTransform;
 	protected Transform Transform;
 
 	private Collider[] _cropsDetected;
 
-	public RatMachineState(RatAI enemyAI)
+	public CrowMachineState(CrowAI enemyAI)
 	{
 		EnemyAI = enemyAI;
 
@@ -69,7 +71,7 @@ public abstract class RatMachineState
 	public virtual void Update() { Stage = Event.Update; }
 	public virtual void Exit() { Stage = Event.Enter; }
 
-	public RatMachineState Handle()
+	public CrowMachineState Handle()
 	{
 		switch (Stage)
 		{
@@ -92,22 +94,23 @@ public abstract class RatMachineState
 	protected bool CanSeeCrop()
 	{
 		var hits = Physics.OverlapSphereNonAlloc(AICharacterMotor.transform.position,
-			Data.VisibleDistance,
+			Data.MinMaxVisibleDistance.y,
 			_cropsDetected,
 			1 << LayerMask.NameToLayer("Crop"));
 
-		if (hits > 0)
+		for (int i = 0; i < hits; i++)
 		{
-			EnemyAI.Data.TargetCropTransform = _cropsDetected[Random.Range(0, hits)].transform;
+			//if (Vector3.Distance(Transform.position, _cropsDetected[i].transform.position) > Data.MinMaxVisibleDistance.x)
+			{
+				Vector3 direction = _cropsDetected[i].transform.position - EnemyAI.Data.AICharacterMotor.transform.position;
 
-			//Vector3 direction = _cropsDetected[0].transform.position - EnemyAI.Data.AICharacterMotor.transform.position;
-
-			//float angle = Vector3.Angle(direction, EnemyAI.Data.AICharacterMotor.transform.forward);
-			//if (direction.magnitude <= VisibleDistance && angle <= VisibaleAngle)
-			//{
-			//	return true;
-			//}
-			return true;
+				float angle = Vector3.Angle(direction, EnemyAI.Data.AICharacterMotor.transform.forward);
+				if (direction.magnitude >= Data.MinMaxVisibleDistance.x && angle <= 30)
+				{
+					EnemyAI.Data.TargetCropTransform = _cropsDetected[i].transform;
+					return true;
+				}
+			}
 		}
 
 		return false;

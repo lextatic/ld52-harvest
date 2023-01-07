@@ -1,6 +1,6 @@
-﻿public abstract class Detecting : RatMachineState
+﻿public abstract class RatDetecting : RatMachineState
 {
-	public Detecting(RatAI enemyAI)
+	public RatDetecting(RatAI enemyAI)
 		: base(enemyAI)
 	{
 		//

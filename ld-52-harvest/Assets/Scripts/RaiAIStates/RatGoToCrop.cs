@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class RatGoToCrop : Detecting
+public class RatGoToCrop : RatMachineState
 {
 	public RatGoToCrop(RatAI enemyAI)
 		: base(enemyAI)
