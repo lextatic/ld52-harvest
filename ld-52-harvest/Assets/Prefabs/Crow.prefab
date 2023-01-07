@@ -131,6 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 6
+  MaxSteeringAngle: 0
   TargetPosition: {x: 0, y: 0, z: 0}
 --- !u!143 &948352505667470653
 CharacterController:
@@ -163,20 +164,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data:
-    MinMaxVisibleDistance: {x: 2, y: 5}
+    MinMaxVisibleDistance: {x: 3, y: 5}
     VisibleAngle: 30
     WalkSpeed: 4
     JogSpeed: 4
     RunSpeed: 9
+    TakeoffSpeed: 3
+    MaxSteeringAngle: 60
     FleeDuration: 0.6
-    MinMaxIdleDuration: {x: 0, y: 0}
     EatDuration: 3
     MaxFlightHeight: 8
+    MapTopLeft: {x: -8, y: -8}
+    MapBottomRight: {x: 8, y: 8}
+    MinMaxWalkDistance: {x: 5, y: 15}
+    ChanceToWalkToCenterOfMap: 0.3
     AICharacterMotor: {fileID: 948352505667470643}
     PlayerTransform: {fileID: 0}
     CrowView: {fileID: 8622131366224402158}
     TargetCrop: {fileID: 0}
-  CurrentState: 0
+    GoHome: 0
+  _currentState: 0
 --- !u!1 &948352505863121120
 GameObject:
   m_ObjectHideFlags: 0

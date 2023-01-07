@@ -4,7 +4,7 @@ public abstract class RatMachineState
 {
 	public enum RatState
 	{
-		Move, Idle, GoToCrop, Eat, Flee, GoHome
+		GoToFarm, Move, Idle, GoToCrop, Eat, Flee, GoHome
 	}
 
 	protected enum Event
@@ -17,8 +17,6 @@ public abstract class RatMachineState
 	{
 		[Header("Detection")]
 		public float VisibleDistance;
-		//public float VisibaleAngle;
-		//public float AttackDistance;
 
 		[Header("Movement Speeds")]
 		public float WalkSpeed;
@@ -30,12 +28,24 @@ public abstract class RatMachineState
 		public Vector2 MinMaxIdleDuration;
 		public float EatDuration;
 
+		[Header("Position")]
+		public Vector2 MapTopLeft;
+		public Vector2 MapBottomRight;
+
+		[Header("Distances")]
+		public Vector2 MinMaxWalkDistance;
+
+		[Header("Chances")]
+		[Range(0f, 1f)]
+		public float ChanceToWalkToCenterOfMap;
+
 		[Header("References")]
 		public AICharacterMotor AICharacterMotor;
 		public Transform PlayerTransform;
 
 		[HideInInspector]
 		public Crop TargetCrop;
+		[HideInInspector]
 		public bool GoHome;
 	}
 

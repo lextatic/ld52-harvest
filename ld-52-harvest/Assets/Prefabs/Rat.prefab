@@ -79,18 +79,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data:
     VisibleDistance: 5
-    VisibaleAngle: 30
-    AttackDistance: 1.5
     WalkSpeed: 3
     JogSpeed: 5
     RunSpeed: 9
     FleeDuration: 1
     MinMaxIdleDuration: {x: 3, y: 5}
     EatDuration: 5
+    MapTopLeft: {x: -8, y: -8}
+    MapBottomRight: {x: 8, y: 8}
+    MinMaxWalkDistance: {x: 5, y: 10}
+    ChanceToWalkToCenterOfMap: 0.3
     AICharacterMotor: {fileID: 4717351568962132639}
     PlayerTransform: {fileID: 0}
-    TargetCropTransform: {fileID: 0}
-  CurrentState: 0
+    TargetCrop: {fileID: 0}
+    GoHome: 0
+  _currentState: 0
 --- !u!143 &4717351568962132636
 CharacterController:
   m_ObjectHideFlags: 0

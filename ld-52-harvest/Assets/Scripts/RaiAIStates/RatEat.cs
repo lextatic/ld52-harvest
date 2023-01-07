@@ -38,7 +38,11 @@ public class RatEat : RatMachineState
 
 		if (_eatTimer <= 0)
 		{
-			GameObject.Destroy(TargetCrop.gameObject);
+			if (TargetCrop != null)
+			{
+				GameObject.Destroy(TargetCrop.gameObject);
+			}
+
 			NextState = new RatIdle(EnemyAI);
 			Stage = Event.Exit;
 		}

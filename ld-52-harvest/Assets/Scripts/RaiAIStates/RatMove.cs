@@ -2,16 +2,6 @@
 
 public class RatMove : RatDetecting
 {
-	private readonly Vector3[] _patrolPositions =
-		new Vector3[]
-		{
-				new Vector3(-4, 0, 4),
-				new Vector3(4, 0, 4),
-				new Vector3(4, 0, -4),
-				new Vector3(-4, 0, -4),
-			//new Vector3(-4, 0, 4)
-		};
-
 	public RatMove(RatAI enemyAI)
 		: base(enemyAI)
 	{
@@ -21,11 +11,21 @@ public class RatMove : RatDetecting
 	public override void Enter()
 	{
 		AICharacterMotor.MoveSpeed = Data.WalkSpeed;
-		AICharacterMotor.TargetPosition = _patrolPositions[Random.Range(0, _patrolPositions.Length)];
 
-		// Works, but may become too easy
-		//var randomDirection2D = (Random.insideUnitCircle.normalized * 5);
-		//AICharacterMotor.TargetPosition = Transform.position + new Vector3(randomDirection2D.x, 0, randomDirection2D.y);
+		var rand = Random.Range(0f, 1f);
+
+		if (rand < Data.ChanceToWalkToCenterOfMap)
+		{
+			AICharacterMotor.TargetPosition = new Vector3(
+				Random.Range(Data.MapTopLeft.x, Data.MapBottomRight.x),
+				0,
+				Random.Range(Data.MapTopLeft.y, Data.MapBottomRight.y));
+		}
+		else
+		{
+			var randomDirection2D = (Random.insideUnitCircle.normalized * Random.Range(Data.MinMaxWalkDistance.x, Data.MinMaxWalkDistance.y));
+			AICharacterMotor.TargetPosition = Transform.position + new Vector3(randomDirection2D.x, 0, randomDirection2D.y);
+		}
 
 		base.Enter();
 	}

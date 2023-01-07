@@ -2,15 +2,6 @@
 
 public class CrowMove : CrowDetecting
 {
-	private readonly Vector3[] _patrolPositions =
-		new Vector3[]
-		{
-				new Vector3(-4, 0, 4),
-				new Vector3(4, 0, 4),
-				new Vector3(4, 0, -4),
-				new Vector3(-4, 0, -4)
-		};
-
 	public CrowMove(CrowAI enemyAI)
 		: base(enemyAI)
 	{
@@ -23,13 +14,16 @@ public class CrowMove : CrowDetecting
 
 		var rand = Random.Range(0f, 1f);
 
-		if (rand < .3f)
+		if (rand < Data.ChanceToWalkToCenterOfMap)
 		{
-			AICharacterMotor.TargetPosition = _patrolPositions[Random.Range(0, _patrolPositions.Length)];
+			AICharacterMotor.TargetPosition = new Vector3(
+				Random.Range(Data.MapTopLeft.x, Data.MapBottomRight.x),
+				0,
+				Random.Range(Data.MapTopLeft.y, Data.MapBottomRight.y));
 		}
 		else
 		{
-			var randomDirection2D = (Random.insideUnitCircle.normalized * 5);
+			var randomDirection2D = (Random.insideUnitCircle.normalized * Random.Range(Data.MinMaxWalkDistance.x, Data.MinMaxWalkDistance.y));
 			AICharacterMotor.TargetPosition = Transform.position + new Vector3(randomDirection2D.x, 0, randomDirection2D.y);
 		}
 
@@ -40,7 +34,7 @@ public class CrowMove : CrowDetecting
 	{
 		if (Data.CrowView.transform.position.y < Data.MaxFlightHeight)
 		{
-			Data.CrowView.transform.Translate(Vector3.up * 3f * Time.deltaTime);
+			Data.CrowView.transform.Translate(Vector3.up * Data.TakeoffSpeed * Time.deltaTime);
 
 			if (Data.CrowView.transform.position.y > Data.MaxFlightHeight)
 			{
@@ -57,52 +51,6 @@ public class CrowMove : CrowDetecting
 		{
 			base.Update();
 		}
-	}
-
-	public override void Exit()
-	{
-		base.Exit();
-	}
-}
-
-public class CrowGoHome : CrowDetecting
-{
-	private readonly Vector3[] _patrolPositions =
-		new Vector3[]
-		{
-				new Vector3(-4, 0, 4),
-				new Vector3(4, 0, 4),
-				new Vector3(4, 0, -4),
-				new Vector3(-4, 0, -4)
-		};
-
-	public CrowGoHome(CrowAI enemyAI)
-		: base(enemyAI)
-	{
-		Name = CrowState.GoHome;
-	}
-
-	public override void Enter()
-	{
-		AICharacterMotor.MoveSpeed = Data.RunSpeed;
-		AICharacterMotor.TargetPosition = (Transform.position - Vector3.zero) * 50;
-
-		base.Enter();
-	}
-
-	public override void Update()
-	{
-		if (Data.CrowView.transform.position.y < Data.MaxFlightHeight)
-		{
-			Data.CrowView.transform.Translate(Vector3.up * 3f * Time.deltaTime);
-
-			if (Data.CrowView.transform.position.y > Data.MaxFlightHeight)
-			{
-				Data.CrowView.transform.Translate(Vector3.down * (Data.CrowView.transform.position.y - Data.MaxFlightHeight));
-			}
-		}
-
-		base.Update();
 	}
 
 	public override void Exit()

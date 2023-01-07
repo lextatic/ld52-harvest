@@ -7,7 +7,7 @@ public class CrowGoToCrop : CrowMachineState
 	public CrowGoToCrop(CrowAI enemyAI)
 		: base(enemyAI)
 	{
-		Name = CrowState.Move;
+		Name = CrowState.GoToCrop;
 	}
 
 	public override void Enter()

@@ -3,16 +3,15 @@ using UnityEngine;
 public class AISteeringCharacterMotor : MonoBehaviour
 {
 	public float MoveSpeed;
+	public float MaxSteeringAngle;
 
 	public Vector3 TargetPosition;
 
-	private CharacterController characterController;
-
-
+	private CharacterController _characterController;
 
 	private void Awake()
 	{
-		characterController = GetComponent<CharacterController>();
+		_characterController = GetComponent<CharacterController>();
 	}
 
 	private void Update()
@@ -20,9 +19,9 @@ public class AISteeringCharacterMotor : MonoBehaviour
 		var targetDirection = TargetPosition - transform.position;
 		targetDirection.y = 0;
 
-		Vector3 rotatedDirection = Vector3.RotateTowards(transform.forward, targetDirection, Mathf.PI * Time.deltaTime, 1);
+		var rotatedDirection = Vector3.RotateTowards(transform.forward, targetDirection, MaxSteeringAngle * Mathf.Deg2Rad * Time.deltaTime, 1);
 
-		characterController.SimpleMove(rotatedDirection.normalized * MoveSpeed);
+		_characterController.SimpleMove(rotatedDirection.normalized * MoveSpeed);
 
 		transform.LookAt(transform.position + rotatedDirection.normalized);
 	}

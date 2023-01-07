@@ -11,7 +11,7 @@ public class CrowAI : MonoBehaviour
 	public event Action OnHurt;
 
 	[SerializeField]
-	private CrowState CurrentState;
+	private CrowState _currentState;
 
 	public void GoHome()
 	{
@@ -19,14 +19,14 @@ public class CrowAI : MonoBehaviour
 	}
 	private void Start()
 	{
-		_currentMovementMachineState = new CrowMove(this);
+		Data.PlayerTransform = GameObject.FindWithTag("Player").transform;
+		_currentMovementMachineState = new CrowGoToFarm(this);
 	}
 
 	private void Update()
 	{
-		// Atualizar states
 		_currentMovementMachineState = _currentMovementMachineState.Handle();
-		CurrentState = _currentMovementMachineState.Name;
+		_currentState = _currentMovementMachineState.Name;
 	}
 
 	private void OnTriggerStay(Collider other)

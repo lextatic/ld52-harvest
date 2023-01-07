@@ -4,7 +4,7 @@ public abstract class CrowMachineState
 {
 	public enum CrowState
 	{
-		Move, GoToCrop, Eat, Flee, GoHome
+		GoToFarm, Move, GoToCrop, Eat, Flee, GoHome
 	}
 
 	protected enum Event
@@ -23,14 +23,24 @@ public abstract class CrowMachineState
 		public float WalkSpeed;
 		public float JogSpeed;
 		public float RunSpeed;
+		public float TakeoffSpeed;
+		public float MaxSteeringAngle;
 
 		[Header("Timed stuff")]
 		public float FleeDuration;
-		public Vector2 MinMaxIdleDuration;
 		public float EatDuration;
 
 		[Header("Position")]
 		public float MaxFlightHeight;
+		public Vector2 MapTopLeft;
+		public Vector2 MapBottomRight;
+
+		[Header("Distances")]
+		public Vector2 MinMaxWalkDistance;
+
+		[Header("Chances")]
+		[Range(0f, 1f)]
+		public float ChanceToWalkToCenterOfMap;
 
 		[Header("References")]
 		public AISteeringCharacterMotor AICharacterMotor;
@@ -39,6 +49,7 @@ public abstract class CrowMachineState
 
 		[HideInInspector]
 		public Crop TargetCrop;
+		[HideInInspector]
 		public bool GoHome;
 	}
 
@@ -65,6 +76,8 @@ public abstract class CrowMachineState
 		PlayerTransform = Data.PlayerTransform;
 		TargetCrop = Data.TargetCrop;
 		Transform = AICharacterMotor.transform;
+
+		AICharacterMotor.MaxSteeringAngle = Data.MaxSteeringAngle;
 
 		_cropsDetected = new Collider[10];
 	}

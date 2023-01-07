@@ -6,16 +6,12 @@ public class RatAI : MonoBehaviour
 {
 	public RatAIData Data;
 
-	//private AICharacterMotor _characterMotor;
-	private AttackAnimator _attackAnimator;
-
 	private RatMachineState _currentMovementMachineState;
 
 	public event Action OnHurt;
-	public event Action OnGoHome;
 
 	[SerializeField]
-	private RatState CurrentState;
+	private RatState _currentState;
 
 	public void GoHome()
 	{
@@ -24,14 +20,14 @@ public class RatAI : MonoBehaviour
 
 	private void Start()
 	{
-		_currentMovementMachineState = new RatMove(this);
+		Data.PlayerTransform = GameObject.FindWithTag("Player").transform;
+		_currentMovementMachineState = new RatGoToFarm(this);
 	}
 
 	private void Update()
 	{
-		// Atualizar states
 		_currentMovementMachineState = _currentMovementMachineState.Handle();
-		CurrentState = _currentMovementMachineState.Name;
+		_currentState = _currentMovementMachineState.Name;
 	}
 
 	private void OnTriggerStay(Collider other)
