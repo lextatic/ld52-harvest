@@ -21,6 +21,13 @@
 
 	public override void Update()
 	{
+		if (Data.GoHome)
+		{
+			NextState = new RatGoHome(EnemyAI);
+			Stage = Event.Exit;
+			return;
+		}
+
 		if (CanSeeCrop())
 		{
 			NextState = new RatGoToCrop(EnemyAI);

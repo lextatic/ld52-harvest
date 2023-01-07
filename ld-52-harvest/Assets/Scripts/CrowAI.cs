@@ -13,6 +13,10 @@ public class CrowAI : MonoBehaviour
 	[SerializeField]
 	private CrowState CurrentState;
 
+	public void GoHome()
+	{
+		Data.GoHome = true;
+	}
 	private void Start()
 	{
 		_currentMovementMachineState = new CrowMove(this);

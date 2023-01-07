@@ -4,7 +4,7 @@ public abstract class CrowMachineState
 {
 	public enum CrowState
 	{
-		Move, GoToCrop, Eat, Flee, RunAway
+		Move, GoToCrop, Eat, Flee, GoHome
 	}
 
 	protected enum Event
@@ -13,7 +13,7 @@ public abstract class CrowMachineState
 	}
 
 	[System.Serializable]
-	public struct CrowAIData
+	public class CrowAIData
 	{
 		[Header("Detection")]
 		public Vector2 MinMaxVisibleDistance;
@@ -39,6 +39,7 @@ public abstract class CrowMachineState
 
 		[HideInInspector]
 		public Crop TargetCrop;
+		public bool GoHome;
 	}
 
 	public CrowState Name;

@@ -12,9 +12,15 @@ public class RatAI : MonoBehaviour
 	private RatMachineState _currentMovementMachineState;
 
 	public event Action OnHurt;
+	public event Action OnGoHome;
 
 	[SerializeField]
 	private RatState CurrentState;
+
+	public void GoHome()
+	{
+		Data.GoHome = true;
+	}
 
 	private void Start()
 	{

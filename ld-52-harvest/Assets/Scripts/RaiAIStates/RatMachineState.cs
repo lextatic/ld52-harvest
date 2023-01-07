@@ -4,7 +4,7 @@ public abstract class RatMachineState
 {
 	public enum RatState
 	{
-		Move, Idle, GoToCrop, Eat, Flee, RunAway
+		Move, Idle, GoToCrop, Eat, Flee, GoHome
 	}
 
 	protected enum Event
@@ -13,7 +13,7 @@ public abstract class RatMachineState
 	}
 
 	[System.Serializable]
-	public struct RatAIData
+	public class RatAIData
 	{
 		[Header("Detection")]
 		public float VisibleDistance;
@@ -36,6 +36,7 @@ public abstract class RatMachineState
 
 		[HideInInspector]
 		public Crop TargetCrop;
+		public bool GoHome;
 	}
 
 	public RatState Name;
