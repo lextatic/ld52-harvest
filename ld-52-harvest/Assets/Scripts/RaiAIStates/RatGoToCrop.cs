@@ -10,7 +10,7 @@ public class RatGoToCrop : RatMachineState
 
 	public override void Enter()
 	{
-		if (TargetCropTransform == null)
+		if (TargetCrop == null || TargetCrop.IsOcupied)
 		{
 			NextState = new RatMove(EnemyAI);
 			Stage = Event.Exit;
@@ -18,7 +18,7 @@ public class RatGoToCrop : RatMachineState
 		}
 
 		AICharacterMotor.MoveSpeed = Data.JogSpeed;
-		AICharacterMotor.TargetPosition = TargetCropTransform.position;
+		AICharacterMotor.TargetPosition = TargetCrop.transform.position;
 		AICharacterMotor.TargetPosition.y = 0;
 
 		EnemyAI.OnHurt += EnemyAI_OnHurt;
@@ -34,7 +34,7 @@ public class RatGoToCrop : RatMachineState
 
 	public override void Update()
 	{
-		if (TargetCropTransform == null)
+		if (TargetCrop == null || TargetCrop.IsOcupied)
 		{
 			NextState = new RatIdle(EnemyAI);
 			Stage = Event.Exit;

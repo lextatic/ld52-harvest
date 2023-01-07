@@ -17,8 +17,8 @@ public abstract class RatMachineState
 	{
 		[Header("Detection")]
 		public float VisibleDistance;
-		public float VisibaleAngle;
-		public float AttackDistance;
+		//public float VisibaleAngle;
+		//public float AttackDistance;
 
 		[Header("Movement Speeds")]
 		public float WalkSpeed;
@@ -35,7 +35,7 @@ public abstract class RatMachineState
 		public Transform PlayerTransform;
 
 		[HideInInspector]
-		public Transform TargetCropTransform;
+		public Crop TargetCrop;
 	}
 
 	public RatState Name;
@@ -47,10 +47,10 @@ public abstract class RatMachineState
 	protected RatAIData Data;
 	protected AICharacterMotor AICharacterMotor;
 	protected Transform PlayerTransform;
-	protected Transform TargetCropTransform;
+	protected Crop TargetCrop;
 	protected Transform Transform;
 
-	private Collider[] _cropsDetected;
+	private readonly Collider[] _cropsDetected;
 
 	public RatMachineState(RatAI enemyAI)
 	{
@@ -59,7 +59,7 @@ public abstract class RatMachineState
 		Data = enemyAI.Data;
 		AICharacterMotor = Data.AICharacterMotor;
 		PlayerTransform = Data.PlayerTransform;
-		TargetCropTransform = Data.TargetCropTransform;
+		TargetCrop = Data.TargetCrop;
 		Transform = AICharacterMotor.transform;
 
 		_cropsDetected = new Collider[10];
@@ -96,18 +96,15 @@ public abstract class RatMachineState
 			_cropsDetected,
 			1 << LayerMask.NameToLayer("Crop"));
 
-		if (hits > 0)
+		for (int i = 0; i < hits; i++)
 		{
-			EnemyAI.Data.TargetCropTransform = _cropsDetected[Random.Range(0, hits)].transform;
+			var crop = _cropsDetected[Random.Range(0, hits)].GetComponent<Crop>();
 
-			//Vector3 direction = _cropsDetected[0].transform.position - EnemyAI.Data.AICharacterMotor.transform.position;
-
-			//float angle = Vector3.Angle(direction, EnemyAI.Data.AICharacterMotor.transform.forward);
-			//if (direction.magnitude <= VisibleDistance && angle <= VisibaleAngle)
-			//{
-			//	return true;
-			//}
-			return true;
+			if (!crop.IsOcupied)
+			{
+				EnemyAI.Data.TargetCrop = crop;
+				return true;
+			}
 		}
 
 		return false;

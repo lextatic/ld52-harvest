@@ -8,8 +8,7 @@ public class CrowMove : CrowDetecting
 				new Vector3(-4, 0, 4),
 				new Vector3(4, 0, 4),
 				new Vector3(4, 0, -4),
-				new Vector3(-4, 0, -4),
-			//new Vector3(-4, 0, 4)
+				new Vector3(-4, 0, -4)
 		};
 
 	public CrowMove(CrowAI enemyAI)

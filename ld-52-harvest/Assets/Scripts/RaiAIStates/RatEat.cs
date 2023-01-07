@@ -16,6 +16,8 @@ public class RatEat : RatMachineState
 
 		AICharacterMotor.TargetPosition = Transform.position;
 
+		TargetCrop.IsOcupied = true;
+
 		EnemyAI.OnHurt += EnemyAI_OnHurt;
 
 		base.Enter();
@@ -23,6 +25,8 @@ public class RatEat : RatMachineState
 
 	private void EnemyAI_OnHurt()
 	{
+		TargetCrop.IsOcupied = false;
+
 		NextState = new RatFlee(EnemyAI);
 		Stage = Event.Exit;
 		EnemyAI.OnHurt -= EnemyAI_OnHurt;
@@ -32,16 +36,9 @@ public class RatEat : RatMachineState
 	{
 		_eatTimer -= Time.deltaTime;
 
-		if (TargetCropTransform == null)
-		{
-			NextState = new RatIdle(EnemyAI);
-			Stage = Event.Exit;
-			return;
-		}
-
 		if (_eatTimer <= 0)
 		{
-			GameObject.Destroy(TargetCropTransform.gameObject);
+			GameObject.Destroy(TargetCrop.gameObject);
 			NextState = new RatIdle(EnemyAI);
 			Stage = Event.Exit;
 		}

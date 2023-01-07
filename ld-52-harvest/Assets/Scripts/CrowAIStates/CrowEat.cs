@@ -16,6 +16,8 @@ public class CrowEat : CrowMachineState
 
 		AICharacterMotor.TargetPosition = Transform.position;
 
+		TargetCrop.IsOcupied = true;
+
 		EnemyAI.OnHurt += EnemyAI_OnHurt;
 
 		base.Enter();
@@ -23,8 +25,11 @@ public class CrowEat : CrowMachineState
 
 	private void EnemyAI_OnHurt()
 	{
+		TargetCrop.IsOcupied = false;
+
 		NextState = new CrowFlee(EnemyAI);
 		Stage = Event.Exit;
+
 		EnemyAI.OnHurt -= EnemyAI_OnHurt;
 	}
 
@@ -32,16 +37,9 @@ public class CrowEat : CrowMachineState
 	{
 		_eatTimer -= Time.deltaTime;
 
-		if (TargetCropTransform == null)
-		{
-			NextState = new CrowMove(EnemyAI);
-			Stage = Event.Exit;
-			return;
-		}
-
 		if (_eatTimer <= 0)
 		{
-			GameObject.Destroy(TargetCropTransform.gameObject);
+			GameObject.Destroy(TargetCrop.gameObject);
 			NextState = new CrowMove(EnemyAI);
 			Stage = Event.Exit;
 		}

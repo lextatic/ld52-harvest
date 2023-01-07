@@ -12,7 +12,7 @@ public class CrowGoToCrop : CrowMachineState
 
 	public override void Enter()
 	{
-		if (TargetCropTransform == null)
+		if (TargetCrop == null || TargetCrop.IsOcupied)
 		{
 			NextState = new CrowMove(EnemyAI);
 			Stage = Event.Exit;
@@ -20,7 +20,7 @@ public class CrowGoToCrop : CrowMachineState
 		}
 
 		AICharacterMotor.MoveSpeed = Data.JogSpeed;
-		AICharacterMotor.TargetPosition = TargetCropTransform.position;
+		AICharacterMotor.TargetPosition = TargetCrop.transform.position;
 		AICharacterMotor.TargetPosition.y = 0;
 
 		var distance = Vector3.Distance(Transform.position, AICharacterMotor.TargetPosition);
@@ -41,7 +41,7 @@ public class CrowGoToCrop : CrowMachineState
 
 	public override void Update()
 	{
-		if (TargetCropTransform == null)
+		if (TargetCrop == null || TargetCrop.IsOcupied)
 		{
 			NextState = new CrowMove(EnemyAI);
 			Stage = Event.Exit;

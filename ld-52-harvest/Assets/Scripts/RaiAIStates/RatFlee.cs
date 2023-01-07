@@ -18,6 +18,7 @@ public class RatFlee : RatMachineState
 		_hurtDirection = Transform.position - PlayerTransform.position;
 		_hurtDirection.y = 0;
 		_hurtDirection.Normalize();
+
 		base.Enter();
 	}
 
@@ -25,17 +26,8 @@ public class RatFlee : RatMachineState
 	{
 		_hurtTimer -= Time.deltaTime;
 
-		//if (_hurtTimer > .8f)
-		//{
-		//	AICharacterMotor.ReverseDirection = true;
-		//	AICharacterMotor.TargetPosition = AICharacterMotor.transform.position + _hurtDirection;
-		//}
-		//else
-		//{
-		//AICharacterMotor.ReverseDirection = false;
 		AICharacterMotor.TargetPosition = Transform.position + _hurtDirection;//AICharacterMotor.transform.position;
 																			  //}
-
 		if (_hurtTimer <= 0)
 		{
 			NextState = new RatIdle(EnemyAI);

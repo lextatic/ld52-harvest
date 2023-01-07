@@ -17,6 +17,7 @@ public abstract class CrowMachineState
 	{
 		[Header("Detection")]
 		public Vector2 MinMaxVisibleDistance;
+		public float VisibleAngle;
 
 		[Header("Movement Speeds")]
 		public float WalkSpeed;
@@ -37,7 +38,7 @@ public abstract class CrowMachineState
 		public Transform CrowView;
 
 		[HideInInspector]
-		public Transform TargetCropTransform;
+		public Crop TargetCrop;
 	}
 
 	public CrowState Name;
@@ -49,10 +50,10 @@ public abstract class CrowMachineState
 	protected CrowAIData Data;
 	protected AISteeringCharacterMotor AICharacterMotor;
 	protected Transform PlayerTransform;
-	protected Transform TargetCropTransform;
+	protected Crop TargetCrop;
 	protected Transform Transform;
 
-	private Collider[] _cropsDetected;
+	private readonly Collider[] _cropsDetected;
 
 	public CrowMachineState(CrowAI enemyAI)
 	{
@@ -61,7 +62,7 @@ public abstract class CrowMachineState
 		Data = enemyAI.Data;
 		AICharacterMotor = Data.AICharacterMotor;
 		PlayerTransform = Data.PlayerTransform;
-		TargetCropTransform = Data.TargetCropTransform;
+		TargetCrop = Data.TargetCrop;
 		Transform = AICharacterMotor.transform;
 
 		_cropsDetected = new Collider[10];
@@ -100,14 +101,16 @@ public abstract class CrowMachineState
 
 		for (int i = 0; i < hits; i++)
 		{
-			//if (Vector3.Distance(Transform.position, _cropsDetected[i].transform.position) > Data.MinMaxVisibleDistance.x)
+			var crop = _cropsDetected[i].GetComponent<Crop>();
+
+			if (!crop.IsOcupied)
 			{
 				Vector3 direction = _cropsDetected[i].transform.position - EnemyAI.Data.AICharacterMotor.transform.position;
 
 				float angle = Vector3.Angle(direction, EnemyAI.Data.AICharacterMotor.transform.forward);
-				if (direction.magnitude >= Data.MinMaxVisibleDistance.x && angle <= 30)
+				if (direction.magnitude >= Data.MinMaxVisibleDistance.x && angle <= Data.VisibleAngle)
 				{
-					EnemyAI.Data.TargetCropTransform = _cropsDetected[i].transform;
+					EnemyAI.Data.TargetCrop = crop;
 					return true;
 				}
 			}
@@ -115,15 +118,4 @@ public abstract class CrowMachineState
 
 		return false;
 	}
-
-	//protected bool CanAttackPlayer()
-	//{
-	//	Vector3 direction = Player.position - AICharacterMotor.transform.position;
-	//	if (direction.magnitude <= AttackDistance)
-	//	{
-	//		return true;
-	//	}
-
-	//	return false;
-	//}
 }

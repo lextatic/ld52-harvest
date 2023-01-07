@@ -4,12 +4,7 @@ using static RatMachineState;
 
 public class RatAI : MonoBehaviour
 {
-	public RatAIData Data = new RatAIData
-	{
-		VisibleDistance = 5f,
-		VisibaleAngle = 30f,
-		AttackDistance = 1.5f,
-	};
+	public RatAIData Data;
 
 	//private AICharacterMotor _characterMotor;
 	private AttackAnimator _attackAnimator;
