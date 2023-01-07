@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Data:
-    MinMaxVisibleDistance: {x: 3, y: 5}
+    MinMaxVisibleDistance: {x: 5, y: 7}
     VisibleAngle: 30
     WalkSpeed: 4
     JogSpeed: 4

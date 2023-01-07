@@ -5,8 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 	public float Duration = 30f;
+	public Light Light;
+	public Gradient LightGradient;
 
-	// Start is called before the first frame update
+	private float _elapsedTime;
+
 	private IEnumerator Start()
 	{
 		yield return new WaitForSeconds(Duration);
@@ -23,6 +26,8 @@ public class GameManager : MonoBehaviour
 			crow.GoHome();
 		}
 
+		GameObject.FindWithTag("Mast").GetComponent<SphereCollider>().enabled = true;
+
 		if (FindObjectsOfType<Crop>().GroupBy(x => x.Type).Select(x => x.First()).Count() < 4)
 		{
 			Debug.Log("Defeat");
@@ -33,9 +38,10 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
-	void Update()
+	private void Update()
 	{
-
+		_elapsedTime += Time.deltaTime;
+		float t = _elapsedTime / Duration;
+		Light.color = LightGradient.Evaluate(t);
 	}
 }

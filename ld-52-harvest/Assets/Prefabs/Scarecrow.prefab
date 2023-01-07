@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b095902e362539143bae9b627a0cd1ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputActions: {fileID: -944628639613478452, guid: 29fc7f2a225b7994c8b593501665bc0c, type: 3}
+  _inputActions: {fileID: -944628639613478452, guid: 29fc7f2a225b7994c8b593501665bc0c, type: 3}
   RollDuration: 0.3
   HurtDuration: 0.3
   HurtMoveDuration: 0.1

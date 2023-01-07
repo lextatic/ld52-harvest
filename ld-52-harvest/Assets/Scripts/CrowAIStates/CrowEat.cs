@@ -37,6 +37,8 @@ public class CrowEat : CrowMachineState
 	{
 		_eatTimer -= Time.deltaTime;
 
+		TargetCrop.FillAmmount = (Data.EatDuration - _eatTimer) / Data.EatDuration;
+
 		if (_eatTimer <= 0)
 		{
 			GameObject.Destroy(TargetCrop.gameObject);
@@ -51,6 +53,11 @@ public class CrowEat : CrowMachineState
 
 	public override void Exit()
 	{
+		if (TargetCrop != null)
+		{
+			TargetCrop.FillAmmount = 0;
+		}
+
 		base.Exit();
 	}
 }

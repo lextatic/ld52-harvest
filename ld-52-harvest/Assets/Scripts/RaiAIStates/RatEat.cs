@@ -36,6 +36,8 @@ public class RatEat : RatMachineState
 	{
 		_eatTimer -= Time.deltaTime;
 
+		TargetCrop.FillAmmount = (Data.EatDuration - _eatTimer) / Data.EatDuration;
+
 		if (_eatTimer <= 0)
 		{
 			if (TargetCrop != null)
@@ -54,6 +56,11 @@ public class RatEat : RatMachineState
 
 	public override void Exit()
 	{
+		if (TargetCrop != null)
+		{
+			TargetCrop.FillAmmount = 0;
+		}
+
 		base.Exit();
 	}
 }

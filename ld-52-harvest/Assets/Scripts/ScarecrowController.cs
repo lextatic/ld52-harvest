@@ -1,17 +1,19 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ScarecrowController : MonoBehaviour
 {
-	private CharacterController characterController;
-	private Vector3 moveDirection;
-	private float moveSpeed = 5.0f;
+	private CharacterController _characterController;
+	private Vector3 _moveDirection;
+	private float _moveSpeed = 5.0f;
 
 	[SerializeField]
-	private InputActionAsset inputActions;
-	private InputAction moveAction;
-	private InputAction attackAction;
-	private InputAction rollAction;
+	private InputActionAsset _inputActions;
+	private InputAction _moveAction;
+	private InputAction _attackAction;
+	private InputAction _rollAction;
+	private InputAction _interactAction;
 
 	public float RollDuration = 0.3f;
 	public float HurtDuration = 0.3f;
@@ -29,78 +31,95 @@ public class ScarecrowController : MonoBehaviour
 	private float _hurtTime;
 	private Vector3 _facingDirection;
 
+	private bool _closeToMast;
+
 	private void Awake()
 	{
-		characterController = GetComponent<CharacterController>();
-		moveAction = inputActions.FindAction("Move");
-		attackAction = inputActions.FindAction("Attack");
-		rollAction = inputActions.FindAction("Roll");
+		_characterController = GetComponent<CharacterController>();
+		_moveAction = _inputActions.FindAction("Move");
+		_attackAction = _inputActions.FindAction("Attack");
+		_rollAction = _inputActions.FindAction("Roll");
+		_interactAction = _inputActions.FindAction("Interact");
 
 		_facingDirection = Vector3.forward;
+
+		_closeToMast = false;
 	}
 
 	private void OnEnable()
 	{
-		moveAction.Enable();
-		attackAction.Enable();
-		rollAction.Enable();
+		_moveAction.Enable();
+		_attackAction.Enable();
+		_rollAction.Enable();
+		_interactAction.Enable();
 	}
 
 	private void OnDisable()
 	{
-		moveAction.Disable();
-		attackAction.Disable();
-		rollAction.Disable();
+		_moveAction.Disable();
+		_attackAction.Disable();
+		_rollAction.Disable();
+		_interactAction.Disable();
 	}
 
 	private void Update()
 	{
 		if (_rollTime >= Time.time)
 		{
-			characterController.SimpleMove(_facingDirection * moveSpeed * RollSpeedMultiplier);
+			_characterController.SimpleMove(_facingDirection * _moveSpeed * RollSpeedMultiplier);
 		}
 		else if (_hurtTime >= Time.time)
 		{
 			if (_hurtTime >= Time.time + HurtDuration - HurtMoveDuration)
 			{
-				characterController.SimpleMove(-_facingDirection * moveSpeed * HurtSpeedMultiplier);
+				_characterController.SimpleMove(-_facingDirection * _moveSpeed * HurtSpeedMultiplier);
 			}
 		}
 		else if (_attackTime >= Time.time)
 		{
-			characterController.SimpleMove(_facingDirection * moveSpeed * AttackSpeedMultiplier);
+			_characterController.SimpleMove(_facingDirection * _moveSpeed * AttackSpeedMultiplier);
 		}
 		else
 		{
 			AttackCollider.SetActive(false);
 
-			var inputDirection = moveAction.ReadValue<Vector2>();
-			moveDirection = new Vector3(inputDirection.x, 0, inputDirection.y);
-			if (moveDirection != Vector3.zero)
+			var inputDirection = _moveAction.ReadValue<Vector2>();
+			_moveDirection = new Vector3(inputDirection.x, 0, inputDirection.y);
+			if (_moveDirection != Vector3.zero)
 			{
-				_facingDirection = moveDirection;
+				_facingDirection = _moveDirection;
 			}
 
-			characterController.SimpleMove(moveDirection * moveSpeed);
+			_characterController.SimpleMove(_moveDirection * _moveSpeed);
 
-			if (rollAction.triggered)
+			if (_rollAction.triggered)
 			{
 				_rollTime = Time.time + RollDuration;
 			}
-			else if (attackAction.triggered)
+			else if (_attackAction.triggered)
 			{
 				AttackCollider.SetActive(true);
 				_attackTime = Time.time + AttackDuration;
+			}
+			else if (_interactAction.triggered && _closeToMast)
+			{
+				SceneManager.LoadScene(0);
 			}
 		}
 
 		transform.LookAt(transform.position + _facingDirection.normalized);
 	}
 
-	private void OnTriggerEnter(Collider other)
+	private void OnTriggerStay(Collider other)
 	{
 		if (_rollTime >= Time.time || _hurtTime >= Time.time || _attackTime >= Time.time)
 		{
+			return;
+		}
+
+		if (other.CompareTag("Mast"))
+		{
+			_closeToMast = true;
 			return;
 		}
 
@@ -109,5 +128,13 @@ public class ScarecrowController : MonoBehaviour
 		_facingDirection.y = 0;
 
 		_hurtTime = Time.time + HurtDuration;
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		if (other.CompareTag("Mast"))
+		{
+			_closeToMast = false;
+		}
 	}
 }

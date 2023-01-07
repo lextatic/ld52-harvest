@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Mast
+  - UICanvas
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - Player Attack
   - Enemy Attack
   - Crop
-  - 
+  - Mast
   - 
   - 
   - 
