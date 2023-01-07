@@ -13,9 +13,21 @@ public class ScarecrowController : MonoBehaviour
 	private InputAction attackAction;
 	private InputAction rollAction;
 
+	public float RollDuration = 0.3f;
+	public float HurtDuration = 0.3f;
+	public float HurtMoveDuration = 0.1f;
+	public float AttackDuration = 0.1f;
+
+	public float RollSpeedMultiplier = 3;
+	public float HurtSpeedMultiplier = 1;
+	public float AttackSpeedMultiplier = 3;
+
+	public GameObject AttackCollider;
+
 	private float _rollTime;
 	private float _attackTime;
-	private Vector3 _lastValidDirection;
+	private float _hurtTime;
+	private Vector3 _facingDirection;
 
 	private void Awake()
 	{
@@ -24,7 +36,7 @@ public class ScarecrowController : MonoBehaviour
 		attackAction = inputActions.FindAction("Attack");
 		rollAction = inputActions.FindAction("Roll");
 
-		_lastValidDirection = Vector3.forward;
+		_facingDirection = Vector3.forward;
 	}
 
 	private void OnEnable()
@@ -45,30 +57,57 @@ public class ScarecrowController : MonoBehaviour
 	{
 		if (_rollTime >= Time.time)
 		{
-			characterController.SimpleMove(_lastValidDirection * moveSpeed * 5);
+			characterController.SimpleMove(_facingDirection * moveSpeed * RollSpeedMultiplier);
+		}
+		else if (_hurtTime >= Time.time)
+		{
+			if (_hurtTime >= Time.time + HurtDuration - HurtMoveDuration)
+			{
+				characterController.SimpleMove(-_facingDirection * moveSpeed * HurtSpeedMultiplier);
+			}
 		}
 		else if (_attackTime >= Time.time)
 		{
-			characterController.SimpleMove(_lastValidDirection * moveSpeed * 3);
+			characterController.SimpleMove(_facingDirection * moveSpeed * AttackSpeedMultiplier);
 		}
 		else
 		{
+			AttackCollider.SetActive(false);
+
 			var inputDirection = moveAction.ReadValue<Vector2>();
 			moveDirection = new Vector3(inputDirection.x, 0, inputDirection.y);
 			if (moveDirection != Vector3.zero)
 			{
-				_lastValidDirection = moveDirection;
+				_facingDirection = moveDirection;
 			}
+
 			characterController.SimpleMove(moveDirection * moveSpeed);
 
 			if (rollAction.triggered)
 			{
-				_rollTime = Time.time + 0.3f;
+				_rollTime = Time.time + RollDuration;
 			}
 			else if (attackAction.triggered)
 			{
-				_attackTime = Time.time + 0.1f;
+				AttackCollider.SetActive(true);
+				_attackTime = Time.time + AttackDuration;
 			}
 		}
+
+		transform.LookAt(transform.position + _facingDirection.normalized);
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (_rollTime >= Time.time || _hurtTime >= Time.time || _attackTime >= Time.time)
+		{
+			return;
+		}
+
+		//transform.LookAt(other.transform.position);
+		_facingDirection = (other.transform.position - transform.position).normalized;
+		_facingDirection.y = 0;
+
+		_hurtTime = Time.time + HurtDuration;
 	}
 }
