@@ -46,11 +46,15 @@ public abstract class CrowMachineState
 		public AISteeringCharacterMotor AICharacterMotor;
 		public Transform PlayerTransform;
 		public Transform CrowView;
+		public SimpleAudioEvent CrowAudioEvent;
+		public SimpleAudioEvent WingsAudioEvent;
 
 		[HideInInspector]
 		public Crop TargetCrop;
 		[HideInInspector]
 		public bool GoHome;
+
+		public AudioSource AudioSource { get; set; }
 	}
 
 	public CrowState Name;

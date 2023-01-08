@@ -24,6 +24,8 @@ public class CrowFlee : CrowMachineState
 
 		_heightIncreaseVelocity = (Data.MaxFlightHeight - Transform.position.y) / _hurtTimer;
 
+		Data.WingsAudioEvent.Play(Data.AudioSource);
+
 		base.Enter();
 	}
 

@@ -19,6 +19,8 @@ public class RatFlee : RatMachineState
 		_hurtDirection.y = 0;
 		_hurtDirection.Normalize();
 
+		Data.RatAudioEvent.Play(Data.AudioSource);
+
 		base.Enter();
 	}
 

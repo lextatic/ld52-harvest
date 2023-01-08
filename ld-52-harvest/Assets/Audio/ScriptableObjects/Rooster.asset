@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80c55610eea73ae4a9702e773cffe829, type: 3}
+  m_Name: Rooster
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: a10c11fb4cbe4d244b392bead3743d41, type: 3}
+  volume:
+    minValue: 0.8
+    maxValue: 1
+  pitch:
+    minValue: 0.8
+    maxValue: 1.2

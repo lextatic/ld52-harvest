@@ -42,11 +42,13 @@ public abstract class RatMachineState
 		[Header("References")]
 		public AICharacterMotor AICharacterMotor;
 		public Transform PlayerTransform;
+		public SimpleAudioEvent RatAudioEvent;
 
 		[HideInInspector]
 		public Crop TargetCrop;
 		[HideInInspector]
 		public bool GoHome;
+		public AudioSource AudioSource { get; set; }
 	}
 
 	public RatState Name;

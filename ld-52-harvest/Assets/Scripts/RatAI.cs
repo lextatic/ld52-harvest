@@ -22,6 +22,8 @@ public class RatAI : MonoBehaviour
 	{
 		Data.PlayerTransform = GameObject.FindWithTag("Player").transform;
 		_currentMovementMachineState = new RatGoToFarm(this);
+
+		Data.AudioSource = GetComponent<AudioSource>();
 	}
 
 	private void Update()

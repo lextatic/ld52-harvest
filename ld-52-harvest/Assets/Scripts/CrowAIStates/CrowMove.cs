@@ -20,6 +20,8 @@ public class CrowMove : CrowDetecting
 				Random.Range(Data.MapTopLeft.x, Data.MapBottomRight.x),
 				0,
 				Random.Range(Data.MapTopLeft.y, Data.MapBottomRight.y));
+
+			Data.CrowAudioEvent.Play(Data.AudioSource);
 		}
 		else
 		{

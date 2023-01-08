@@ -28,6 +28,12 @@ public class ScarecrowController : MonoBehaviour
 	public GameObject WalkView;
 	public GameObject AttackView;
 
+	public SimpleAudioEvent ShooAudioEvent;
+	public SimpleAudioEvent StepAudioEvent;
+
+	public AudioSource ShooAudioSource;
+	public AudioSource StepAudioSource;
+
 	private float _rollTime;
 	private float _attackTime;
 	private float _hurtTime;
@@ -46,6 +52,8 @@ public class ScarecrowController : MonoBehaviour
 		_facingDirection = Vector3.forward;
 
 		_closeToMast = false;
+
+		_lastStepPosition = transform.position;
 	}
 
 	private void OnEnable()
@@ -64,8 +72,18 @@ public class ScarecrowController : MonoBehaviour
 		_interactAction.Disable();
 	}
 
+	private Vector3 _lastStepPosition = Vector3.zero;
+	public float StepDistance = 0.3f;
+
 	private void Update()
 	{
+		if (Vector3.Distance(transform.position, _lastStepPosition) > StepDistance)
+		{
+			StepAudioEvent.Play(StepAudioSource);
+
+			_lastStepPosition = transform.position;
+		}
+
 		if (_rollTime >= Time.time)
 		{
 			_characterController.SimpleMove(_facingDirection * _moveSpeed * RollSpeedMultiplier);
@@ -107,6 +125,8 @@ public class ScarecrowController : MonoBehaviour
 
 				AttackCollider.SetActive(true);
 				_attackTime = Time.time + AttackDuration;
+
+				ShooAudioEvent.Play(ShooAudioSource);
 			}
 			else if (_interactAction.triggered && _closeToMast)
 			{
