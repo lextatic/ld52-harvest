@@ -1,18 +1,37 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Crop;
 
 public class GameManager : MonoBehaviour
 {
+	[Serializable]
+	public struct CropObjective
+	{
+		public Crop.CropType CropType;
+		[Range(0f, 1f)]
+		public float MinPercentage;
+	}
+
 	public float Duration = 30f;
 	public Light Light;
 	public Gradient LightGradient;
 	public RectTransform TimeMarker;
 
+	public CropUI[] CropUIs;
+	public List<CropObjective> CropObjectives;
+
+	private Dictionary<CropType, int> _initialCropCount;
+	private Dictionary<CropType, int> _currentCropCount;
+
 	private float _elapsedTime;
 
 	private IEnumerator Start()
 	{
+		InitializeCropsAndObjectives();
+
 		yield return new WaitForSeconds(Duration);
 
 		var allRats = FindObjectsOfType<RatAI>();
@@ -53,5 +72,73 @@ public class GameManager : MonoBehaviour
 
 		// -145 ~ 145
 		TimeMarker.anchoredPosition = new Vector2((t * 290) - 145, TimeMarker.anchoredPosition.y);
+	}
+
+	private void InitializeCropsAndObjectives()
+	{
+		var allCrops = FindObjectsOfType<Crop>();
+		_initialCropCount = new Dictionary<CropType, int>();
+		_currentCropCount = new Dictionary<CropType, int>();
+
+		_initialCropCount.Add(CropType.Wheat, 0);
+		_initialCropCount.Add(CropType.Corn, 0);
+		_initialCropCount.Add(CropType.Carrot, 0);
+		_initialCropCount.Add(CropType.Beets, 0);
+
+		_currentCropCount.Add(CropType.Wheat, 0);
+		_currentCropCount.Add(CropType.Corn, 0);
+		_currentCropCount.Add(CropType.Carrot, 0);
+		_currentCropCount.Add(CropType.Beets, 0);
+
+		foreach (var crop in allCrops)
+		{
+			_initialCropCount[crop.Type]++;
+			_currentCropCount[crop.Type]++;
+
+			crop.OnCropDestroyed += Crop_OnCropDestroyed;
+		}
+
+		foreach (var cropUI in CropUIs)
+		{
+			foreach (var cropObjective in CropObjectives)
+			{
+				if (cropObjective.CropType == cropUI.CropType)
+				{
+					cropUI.SetMarkerPosition(cropObjective.MinPercentage);
+					break;
+				}
+			}
+		}
+	}
+
+	private void Crop_OnCropDestroyed(Crop crop)
+	{
+		_currentCropCount[crop.Type]--;
+
+		var currentPercentageOfCrops = _currentCropCount[crop.Type] / (float)_initialCropCount[crop.Type];
+
+		foreach (var cropUI in CropUIs)
+		{
+			if (cropUI.CropType == crop.Type)
+			{
+				cropUI.SetFill(currentPercentageOfCrops);
+				break;
+			}
+		}
+
+		foreach (var cropObjective in CropObjectives)
+		{
+			if (cropObjective.CropType == crop.Type)
+			{
+				if (currentPercentageOfCrops < cropObjective.MinPercentage)
+				{
+					Debug.Log("DEFEAT");
+				}
+
+				break;
+			}
+		}
+
+		crop.OnCropDestroyed -= Crop_OnCropDestroyed;
 	}
 }

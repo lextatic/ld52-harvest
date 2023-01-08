@@ -49,7 +49,7 @@ public class ScarecrowController : MonoBehaviour
 		_rollAction = _inputActions.FindAction("Roll");
 		_interactAction = _inputActions.FindAction("Interact");
 
-		_facingDirection = Vector3.forward;
+		_facingDirection = Vector3.back;
 
 		_closeToMast = false;
 
