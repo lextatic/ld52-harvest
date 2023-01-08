@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Crop;
 
 public class GameManager : MonoBehaviour
@@ -23,38 +23,57 @@ public class GameManager : MonoBehaviour
 	public CropUI[] CropUIs;
 	public List<CropObjective> CropObjectives;
 
+	public GameObject GameOverPanel;
+	public GameObject VictoryPanel;
+
 	private Dictionary<CropType, int> _initialCropCount;
 	private Dictionary<CropType, int> _currentCropCount;
 
 	private float _elapsedTime;
+	private bool _defeated;
+	private bool _victory;
 
 	private IEnumerator Start()
 	{
+		_defeated = false;
+		_victory = false;
+
 		InitializeCropsAndObjectives();
 
 		yield return new WaitForSeconds(Duration);
 
-		var allRats = FindObjectsOfType<RatAI>();
-		foreach (var rat in allRats)
+		SendAllAnimalsHome();
+
+		if (!_defeated)
 		{
-			rat.GoHome();
+			GameObject.FindWithTag("Mast").GetComponent<SphereCollider>().enabled = true;
 		}
+	}
 
-		var allCrows = FindObjectsOfType<CrowAI>();
-		foreach (var crow in allCrows)
+	public void GoToNextLevel()
+	{
+		int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+		if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
 		{
-			crow.GoHome();
-		}
-
-		GameObject.FindWithTag("Mast").GetComponent<SphereCollider>().enabled = true;
-
-		if (FindObjectsOfType<Crop>().GroupBy(x => x.Type).Select(x => x.First()).Count() < 4)
-		{
-			Debug.Log("Defeat");
+			string nextSceneName = SceneManager.GetSceneByBuildIndex(nextSceneIndex).name;
+			SceneManager.LoadScene(nextSceneName);
 		}
 		else
 		{
-			Debug.Log("Victory");
+			_victory = true;
+			VictoryPanel.SetActive(true);
+		}
+	}
+
+	public void RestartLevel()
+	{
+		if (_victory)
+		{
+			SceneManager.LoadScene(0);
+		}
+		else
+		{
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		}
 	}
 
@@ -111,6 +130,21 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
+	private void SendAllAnimalsHome()
+	{
+		var allRats = FindObjectsOfType<RatAI>();
+		foreach (var rat in allRats)
+		{
+			rat.GoHome();
+		}
+
+		var allCrows = FindObjectsOfType<CrowAI>();
+		foreach (var crow in allCrows)
+		{
+			crow.GoHome();
+		}
+	}
+
 	private void Crop_OnCropDestroyed(Crop crop)
 	{
 		_currentCropCount[crop.Type]--;
@@ -126,16 +160,23 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		foreach (var cropObjective in CropObjectives)
+		if (!_defeated)
 		{
-			if (cropObjective.CropType == crop.Type)
+			foreach (var cropObjective in CropObjectives)
 			{
-				if (currentPercentageOfCrops < cropObjective.MinPercentage)
+				if (cropObjective.CropType == crop.Type)
 				{
-					Debug.Log("DEFEAT");
-				}
+					if (currentPercentageOfCrops < cropObjective.MinPercentage)
+					{
+						if (GameOverPanel != null)
+						{
+							GameOverPanel.SetActive(true);
+							_defeated = true;
+						}
+					}
 
-				break;
+					break;
+				}
 			}
 		}
 

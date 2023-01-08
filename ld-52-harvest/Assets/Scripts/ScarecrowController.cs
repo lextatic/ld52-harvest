@@ -1,28 +1,25 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class ScarecrowController : MonoBehaviour
 {
-	private CharacterController _characterController;
-	private Vector3 _moveDirection;
-	private float _moveSpeed = 5.0f;
-
 	[SerializeField]
 	private InputActionAsset _inputActions;
 	private InputAction _moveAction;
 	private InputAction _attackAction;
 	private InputAction _rollAction;
 	private InputAction _interactAction;
+	private InputAction _restartAction;
+
+	public float MoveSpeed = 5.0f;
 
 	public float RollDuration = 0.3f;
-	public float HurtDuration = 0.3f;
-	public float HurtMoveDuration = 0.1f;
 	public float AttackDuration = 0.1f;
 
 	public float RollSpeedMultiplier = 3;
-	public float HurtSpeedMultiplier = 1;
 	public float AttackSpeedMultiplier = 3;
+
+	public float StepDistance = 0.3f;
 
 	public GameObject AttackCollider;
 	public GameObject WalkView;
@@ -34,12 +31,18 @@ public class ScarecrowController : MonoBehaviour
 	public AudioSource ShooAudioSource;
 	public AudioSource StepAudioSource;
 
+	public GameManager GameManager;
+
+	private CharacterController _characterController;
+	private Vector3 _moveDirection;
+
 	private float _rollTime;
 	private float _attackTime;
-	private float _hurtTime;
 	private Vector3 _facingDirection;
 
 	private bool _closeToMast;
+
+	private Vector3 _lastStepPosition = Vector3.zero;
 
 	private void Awake()
 	{
@@ -48,6 +51,7 @@ public class ScarecrowController : MonoBehaviour
 		_attackAction = _inputActions.FindAction("Attack");
 		_rollAction = _inputActions.FindAction("Roll");
 		_interactAction = _inputActions.FindAction("Interact");
+		_restartAction = _inputActions.FindAction("Restart");
 
 		_facingDirection = Vector3.back;
 
@@ -62,6 +66,7 @@ public class ScarecrowController : MonoBehaviour
 		_attackAction.Enable();
 		_rollAction.Enable();
 		_interactAction.Enable();
+		_restartAction.Enable();
 	}
 
 	private void OnDisable()
@@ -70,13 +75,17 @@ public class ScarecrowController : MonoBehaviour
 		_attackAction.Disable();
 		_rollAction.Disable();
 		_interactAction.Disable();
+		_restartAction.Disable();
 	}
-
-	private Vector3 _lastStepPosition = Vector3.zero;
-	public float StepDistance = 0.3f;
 
 	private void Update()
 	{
+		if (_restartAction.triggered)
+		{
+			GameManager.RestartLevel();
+			return;
+		}
+
 		if (Vector3.Distance(transform.position, _lastStepPosition) > StepDistance)
 		{
 			StepAudioEvent.Play(StepAudioSource);
@@ -86,18 +95,11 @@ public class ScarecrowController : MonoBehaviour
 
 		if (_rollTime >= Time.time)
 		{
-			_characterController.SimpleMove(_facingDirection * _moveSpeed * RollSpeedMultiplier);
-		}
-		else if (_hurtTime >= Time.time)
-		{
-			if (_hurtTime >= Time.time + HurtDuration - HurtMoveDuration)
-			{
-				_characterController.SimpleMove(-_facingDirection * _moveSpeed * HurtSpeedMultiplier);
-			}
+			_characterController.SimpleMove(_facingDirection * MoveSpeed * RollSpeedMultiplier);
 		}
 		else if (_attackTime >= Time.time)
 		{
-			_characterController.SimpleMove(_facingDirection * _moveSpeed * AttackSpeedMultiplier);
+			_characterController.SimpleMove(_facingDirection * MoveSpeed * AttackSpeedMultiplier);
 		}
 		else
 		{
@@ -112,7 +114,7 @@ public class ScarecrowController : MonoBehaviour
 				_facingDirection = _moveDirection;
 			}
 
-			_characterController.SimpleMove(_moveDirection * _moveSpeed);
+			_characterController.SimpleMove(_moveDirection * MoveSpeed);
 
 			if (_rollAction.triggered)
 			{
@@ -130,7 +132,7 @@ public class ScarecrowController : MonoBehaviour
 			}
 			else if (_interactAction.triggered && _closeToMast)
 			{
-				SceneManager.LoadScene(0);
+				GameManager.GoToNextLevel();
 			}
 		}
 
@@ -139,7 +141,7 @@ public class ScarecrowController : MonoBehaviour
 
 	private void OnTriggerStay(Collider other)
 	{
-		if (_rollTime >= Time.time || _hurtTime >= Time.time || _attackTime >= Time.time)
+		if (_rollTime >= Time.time || _attackTime >= Time.time)
 		{
 			return;
 		}
@@ -149,12 +151,6 @@ public class ScarecrowController : MonoBehaviour
 			_closeToMast = true;
 			return;
 		}
-
-		//transform.LookAt(other.transform.position);
-		_facingDirection = (other.transform.position - transform.position).normalized;
-		_facingDirection.y = 0;
-
-		_hurtTime = Time.time + HurtDuration;
 	}
 
 	private void OnTriggerExit(Collider other)

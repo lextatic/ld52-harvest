@@ -69,13 +69,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputActions: {fileID: -944628639613478452, guid: 29fc7f2a225b7994c8b593501665bc0c, type: 3}
+  MoveSpeed: 5
   RollDuration: 0.3
-  HurtDuration: 0.3
-  HurtMoveDuration: 0.1
   AttackDuration: 0.3
   RollSpeedMultiplier: 3
-  HurtSpeedMultiplier: 1
   AttackSpeedMultiplier: 2
+  StepDistance: 1.5
   AttackCollider: {fileID: 8237865907791113135}
   WalkView: {fileID: 7893852810406149951}
   AttackView: {fileID: 4295046959239701844}
@@ -83,7 +82,7 @@ MonoBehaviour:
   StepAudioEvent: {fileID: 11400000, guid: 92ca147658383ee4388c66d510a3e6b8, type: 2}
   ShooAudioSource: {fileID: 2024935111}
   StepAudioSource: {fileID: 8712521714983080593}
-  StepDistance: 0.3
+  GameManager: {fileID: 0}
 --- !u!82 &2024935111
 AudioSource:
   m_ObjectHideFlags: 0
