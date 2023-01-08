@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 	public float Duration = 30f;
 	public Light Light;
 	public Gradient LightGradient;
+	public RectTransform TimeMarker;
 
 	private float _elapsedTime;
 
@@ -42,6 +43,15 @@ public class GameManager : MonoBehaviour
 	{
 		_elapsedTime += Time.deltaTime;
 		float t = _elapsedTime / Duration;
+
+		if (t > 1)
+		{
+			t = 1;
+		}
+
 		Light.color = LightGradient.Evaluate(t);
+
+		// -145 ~ 145
+		TimeMarker.anchoredPosition = new Vector2((t * 290) - 145, TimeMarker.anchoredPosition.y);
 	}
 }

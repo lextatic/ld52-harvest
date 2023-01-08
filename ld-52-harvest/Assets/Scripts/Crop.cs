@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,8 @@ public class Crop : MonoBehaviour
 
 	private AudioSource _audioSource;
 	private bool _isOcupied = false;
+
+	public event Action<Crop> OnCropDestroyed;
 
 	public float FillAmmount
 	{
@@ -52,6 +55,8 @@ public class Crop : MonoBehaviour
 
 	private void OnDestroy()
 	{
+		OnCropDestroyed?.Invoke(this);
+
 		if (Image != null)
 		{
 			Destroy(Image.gameObject);
