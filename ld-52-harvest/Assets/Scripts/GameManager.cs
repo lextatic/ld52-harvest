@@ -55,8 +55,7 @@ public class GameManager : MonoBehaviour
 		int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
 		if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
 		{
-			string nextSceneName = SceneManager.GetSceneByBuildIndex(nextSceneIndex).name;
-			SceneManager.LoadScene(nextSceneName);
+			SceneManager.LoadScene(nextSceneIndex);
 		}
 		else
 		{
