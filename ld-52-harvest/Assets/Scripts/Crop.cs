@@ -8,7 +8,7 @@ public class Crop : MonoBehaviour
 		Wheat,
 		Corn,
 		Carrot,
-		Beats
+		Beets
 	}
 
 	public CropType Type;

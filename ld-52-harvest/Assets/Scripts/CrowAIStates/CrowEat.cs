@@ -18,6 +18,9 @@ public class CrowEat : CrowMachineState
 
 		TargetCrop.IsOcupied = true;
 
+		Data.CrowView.Find("crow_flying").gameObject.SetActive(false);
+		Data.CrowView.Find("crow_landed").gameObject.SetActive(true);
+
 		EnemyAI.OnHurt += EnemyAI_OnHurt;
 
 		base.Enter();
@@ -57,6 +60,9 @@ public class CrowEat : CrowMachineState
 		{
 			TargetCrop.FillAmmount = 0;
 		}
+
+		Data.CrowView.Find("crow_flying").gameObject.SetActive(true);
+		Data.CrowView.Find("crow_landed").gameObject.SetActive(false);
 
 		base.Exit();
 	}

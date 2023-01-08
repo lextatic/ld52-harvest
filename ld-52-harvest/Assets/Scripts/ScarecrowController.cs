@@ -25,6 +25,8 @@ public class ScarecrowController : MonoBehaviour
 	public float AttackSpeedMultiplier = 3;
 
 	public GameObject AttackCollider;
+	public GameObject WalkView;
+	public GameObject AttackView;
 
 	private float _rollTime;
 	private float _attackTime;
@@ -81,6 +83,8 @@ public class ScarecrowController : MonoBehaviour
 		}
 		else
 		{
+			WalkView.SetActive(true);
+			AttackView.SetActive(false);
 			AttackCollider.SetActive(false);
 
 			var inputDirection = _moveAction.ReadValue<Vector2>();
@@ -98,6 +102,9 @@ public class ScarecrowController : MonoBehaviour
 			}
 			else if (_attackAction.triggered)
 			{
+				WalkView.SetActive(false);
+				AttackView.SetActive(true);
+
 				AttackCollider.SetActive(true);
 				_attackTime = Time.time + AttackDuration;
 			}
