@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +34,8 @@ public class ScarecrowController : MonoBehaviour
 
 	public GameManager GameManager;
 
+	public GameObject SHOO;
+
 	private CharacterController _characterController;
 	private Vector3 _moveDirection;
 
@@ -58,6 +61,8 @@ public class ScarecrowController : MonoBehaviour
 		_closeToMast = false;
 
 		_lastStepPosition = transform.position;
+
+		SHOO.SetActive(false);
 	}
 
 	private void OnEnable()
@@ -127,6 +132,13 @@ public class ScarecrowController : MonoBehaviour
 
 				AttackCollider.SetActive(true);
 				_attackTime = Time.time + AttackDuration;
+
+				SHOO.SetActive(true);
+				SHOO.transform.position = transform.position + (Vector3.up * 4) + (Vector3.left * 1);
+				SHOO.transform.DOMove(SHOO.transform.position + (Vector3.up * 3), 0.3f).OnComplete(() =>
+				{
+					SHOO.SetActive(false);
+				});
 
 				ShooAudioEvent.Play(ShooAudioSource);
 			}

@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
 
 		if (!_defeated)
 		{
-			GameObject.FindWithTag("Mast").GetComponent<SphereCollider>().enabled = true;
+			GameObject.FindWithTag("Mast").GetComponent<Mast>().ActivateMast();
 		}
 	}
 

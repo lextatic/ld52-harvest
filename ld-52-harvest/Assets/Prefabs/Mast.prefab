@@ -91,6 +91,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95869cbe9449cf940b1edc630a3230a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ZZZText:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  DisabledColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
+  EnabledColor: {r: 1, g: 0.8499309, b: 0.5707547, a: 1}
 --- !u!1001 &5057253327127030941
 PrefabInstance:
   m_ObjectHideFlags: 0

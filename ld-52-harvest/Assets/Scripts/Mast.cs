@@ -1,21 +1,47 @@
+using TMPro;
 using UnityEngine;
 
 public class Mast : MonoBehaviour
 {
-	private bool _enabled;
+	public TextMeshProUGUI[] ZZZText;
+	public GameObject TextInstructions;
+	public Color DisabledColor;
+	public Color EnabledColor;
 
-	private void Update()
+	public void ActivateMast()
 	{
-
+		ZZZText[0].gameObject.SetActive(true);
+		GetComponent<SphereCollider>().enabled = true;
 	}
 
-	private void OnTriggerEnter(Collider other)
+	private void Start()
 	{
-		_enabled = true;
+		ZZZText[0].gameObject.SetActive(false);
+		TextInstructions.SetActive(false);
+
+		foreach (var text in ZZZText)
+		{
+			text.color = DisabledColor;
+		}
+	}
+
+	private void OnTriggerStay(Collider other)
+	{
+		foreach (var text in ZZZText)
+		{
+			text.color = EnabledColor;
+		}
+
+		TextInstructions.SetActive(true);
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		_enabled = false;
+		foreach (var text in ZZZText)
+		{
+			text.color = DisabledColor;
+		}
+
+		TextInstructions.SetActive(false);
 	}
 }
